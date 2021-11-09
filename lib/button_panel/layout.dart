@@ -32,11 +32,18 @@ class _ButtonPanelState extends State<ButtonPanel>
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 4,
-      primary: false,
-      children: [for (var i in buttonList) i],
-      padding: EdgeInsets.all(panelAnimation.animation.value),
+    // ignore: avoid_unnecessary_containers
+    return Container(
+      child: Transform.scale(
+        scale: panelAnimation.animation.value,
+        child: GridView.count(
+          crossAxisCount: 4,
+          primary: false,
+          children: buttonList,
+        ),
+      ),
+      height: 500,
+      width: 500,
     );
   }
 }

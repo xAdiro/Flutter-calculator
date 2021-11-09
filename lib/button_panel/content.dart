@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:calculator/button_panel/animations.dart';
 
 //Style
 const double _buttonFontSize = 16;
@@ -52,5 +53,6 @@ class CalcButton extends StatelessWidget {
       ),
       //decoration: BoxDecoration(border: Border.all(color: Colors.black)),
     );
+    ;
   }
 }

@@ -9,8 +9,7 @@ class PanelAnimation {
       parent: controller,
       curve: Curves.easeOutCubic,
     );
-    animation = Tween<double>(begin: 100, end: 1).animate(_curve)
-          ..addListener(() {})
+    animation = Tween<double>(begin: 0, end: 1).animate(_curve)
 
         //padding in grid
         /*..addStatusListener((status) {
