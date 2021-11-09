@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:calculator/button_panel/animations.dart';
+import 'package:calculator/operations_screen/layout.dart';
 
 //Style
 const double _buttonFontSize = 16;
 const Color _buttonColor = Color(0xFFFF8800);
+OperationScreen os = OperationScreen();
 
 List<Widget> buttonList = [
   CalcButton(label: "AC"),
@@ -13,7 +15,7 @@ List<Widget> buttonList = [
           fontFamily: 'MaterialIcons', matchTextDirection: true)),
   CalcButton(label: "√"),
   CalcButton(label: "÷"),
-  for (var i = 7; i <= 9; i++) CalcButton(label: i.toString()),
+  for (var i = 7; i <= 9; i++) CalcButton(label: i.toString(), f: () => {}),
   CalcButton(label: "×"),
   for (var i = 4; i <= 6; i++) CalcButton(label: i.toString()),
   CalcButton(label: "-"),
@@ -28,7 +30,8 @@ List<Widget> buttonList = [
 class CalcButton extends StatelessWidget {
   late final Widget _child;
 
-  CalcButton({Key? key, String? label, IconData? iconData}) : super(key: key) {
+  CalcButton({Key? key, String? label, IconData? iconData, Function()? f})
+      : super(key: key) {
     if (label != null) {
       _child = Text(label,
           style:
