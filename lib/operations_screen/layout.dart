@@ -1,15 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:calculator/button_panel/layout.dart';
 import 'package:calculator/logic/operations.dart';
+import 'package:flutter/material.dart';
 
-class OperationScreen extends StatefulWidget {
+class CalculatorScreen extends StatefulWidget {
+  var stateKey = GlobalKey<CalculatorScreenState>();
+  late OperationsQueue operationsQueue;
+
+  CalculatorScreen({Key? key}) : super(key: key) {
+    if (key == null) {
+      CalculatorScreen(key: stateKey);
+      operationsQueue = OperationsQueue(stateKey);
+    }
+  }
+
   @override
-  _OperationScreenState createState() => _OperationScreenState();
+  CalculatorScreenState createState() => CalculatorScreenState();
 }
 
-class _OperationScreenState extends State<OperationScreen> {
-  String output = "0";
-  List<ResultElement?> operationsQueue = List<ResultElement?>.filled(16, null);
+class CalculatorScreenState extends State<CalculatorScreen> {
+  String output = "\n0";
 
   @override
   Widget build(BuildContext context) {

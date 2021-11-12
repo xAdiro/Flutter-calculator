@@ -2,6 +2,10 @@ import 'package:calculator/button_panel/layout.dart';
 import 'package:calculator/operations_screen/layout.dart';
 import 'package:flutter/material.dart';
 
+/*
+
+USE DECIMAL IN FUTURE
+*/
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
