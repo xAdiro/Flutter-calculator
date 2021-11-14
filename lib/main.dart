@@ -1,5 +1,6 @@
 import 'package:calculator/button_panel/layout.dart';
-import 'package:calculator/operations_screen/layout.dart';
+import 'package:calculator/logic/operations.dart';
+import 'package:calculator/calculator_screen/layout.dart';
 import 'package:flutter/material.dart';
 
 /*
@@ -13,11 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var screen = CalculatorScreen();
+
+    //Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+
     return MaterialApp(
       title: 'Welcome to Flutter',
       home: Scaffold(
         body: Column(
-          children: [OperationScreen(), const ButtonPanel()],
+          children: [
+            screen,
+            ButtonPanel(screen: screen),
+          ],
         ),
       ),
     );

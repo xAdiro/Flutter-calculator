@@ -1,42 +1,44 @@
 import 'dart:math';
 
-import 'package:calculator/operations_screen/layout.dart';
+import 'package:calculator/calculator_screen/layout.dart';
 import 'package:flutter/cupertino.dart';
 
 class OperationsQueue {
-  List<CalculationElement?> queue = List.filled(16, null);
+  List<CalculationElement?> _queue = List.filled(16, null);
   double lastValue = 0;
-  GlobalKey<CalculatorScreenState> screen;
+  CalculatorScreen screen;
 
-  OperationsQueue(this.screen);
+  OperationsQueue(this.screen) {
+    _queue[0] = CalculationElement(number: 0);
+  }
 
   void add(
       {double? digit,
       Function(double)? oneArgOperation,
       Function(double, double)? twoArgOperation}) {
-    for (var i = 1; i < queue.length; i++) {
-      if (queue[i] == null) {
+    for (var i = 1; i < _queue.length; i++) {
+      if (_queue[i] == null) {
         //
         if (digit != null) {
-          if (queue[i - 1]!.twoArgOperation == null) {
-            queue[i - 1]!.number = queue[i - 1]!.number! * 10;
-            queue[i - 1]!.number = queue[i - 1]!.number! + digit;
+          if (_queue[i - 1]!.twoArgOperation == null) {
+            _queue[i - 1]!.number = _queue[i - 1]!.number! * 10;
+            _queue[i - 1]!.number = _queue[i - 1]!.number! + digit;
           } else {
-            queue[i]!.number = digit;
+            _queue[i]!.number = digit;
           }
         }
         //
         else if (oneArgOperation != null) {
-          if (queue[i - 1]!.twoArgOperation == null) {
-            queue[i - 1]!.oneArgOperation = oneArgOperation;
+          if (_queue[i - 1]!.twoArgOperation == null) {
+            _queue[i - 1]!.oneArgOperation = oneArgOperation;
           } else {
-            queue[i]!.oneArgOperation = oneArgOperation;
+            _queue[i]!.oneArgOperation = oneArgOperation;
           }
         }
         //
         else if (twoArgOperation != null) {
-          queue[i - 1]!.twoArgOperation = twoArgOperation;
-          if (queue[i - 1]!.number == null) queue[i] = null;
+          _queue[i - 1]!.twoArgOperation = twoArgOperation;
+          if (_queue[i - 1]!.number == null) _queue[i] = null;
         }
         break;
       }
@@ -45,9 +47,9 @@ class OperationsQueue {
   }
 
   void removeLast() {
-    for (var i = queue.length; i >= 0; i--) {
-      if (queue[i] != null) {
-        queue[i] = null;
+    for (var i = _queue.length; i >= 0; i--) {
+      if (_queue[i] != null) {
+        _queue[i] = null;
         break;
       }
     }
@@ -60,15 +62,16 @@ class OperationsQueue {
   }
 
   void _clear() {
-    queue = List.filled(16, null);
+    _queue = List.filled(16, null);
   }
 
   void _display() {
     String output = "";
-    for (var i in queue) {
-      output += i!.number.toString() + i.toString();
+    for (var i in _queue) {
+      if (i == null) break;
+      output += i.toString();
     }
-    screen.currentState!.output = output;
+    screen.setDisplay(output);
   }
 }
 
