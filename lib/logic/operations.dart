@@ -1,15 +1,14 @@
 import 'dart:math';
 
 import 'package:calculator/calculator_screen/layout.dart';
-import 'package:flutter/cupertino.dart';
 
 class OperationsQueue {
-  List<CalculationElement?> _queue = List.filled(16, null);
+  List<OperationElement?> _queue = List.filled(16, null);
   double lastValue = 0;
   CalculatorScreen screen;
 
   OperationsQueue(this.screen) {
-    _queue[0] = CalculationElement(number: 0);
+    _queue[0] = OperationElement(number: 0);
   }
 
   void add(
@@ -24,7 +23,7 @@ class OperationsQueue {
             _queue[i - 1]!.number = _queue[i - 1]!.number! * 10;
             _queue[i - 1]!.number = _queue[i - 1]!.number! + digit;
           } else {
-            _queue[i]!.number = digit;
+            _queue[i] = OperationElement(number: digit);
           }
         }
         //
@@ -32,7 +31,8 @@ class OperationsQueue {
           if (_queue[i - 1]!.twoArgOperation == null) {
             _queue[i - 1]!.oneArgOperation = oneArgOperation;
           } else {
-            _queue[i]!.oneArgOperation = oneArgOperation;
+            _queue[i - 1]!.twoArgOperation == null;
+            _queue[i - 1]!.oneArgOperation = oneArgOperation;
           }
         }
         //
@@ -46,18 +46,44 @@ class OperationsQueue {
     _display();
   }
 
+  void result() {}
+
   void removeLast() {
-    for (var i = _queue.length; i >= 0; i--) {
+    for (var i = _queue.length - 1; i >= 0; i--) {
       if (_queue[i] != null) {
+        if (_queue[i]!.twoArgOperation != null) {
+          _queue[i]!.twoArgOperation = null;
+        }
+        //
+        else if (_queue[i]!.number != null) {
+          _queue[i]!.number = (_queue[i]!.number! ~/ 10).toDouble();
+
+          // if (_queue[i]!.number != _queue[i]!.number!.toInt().toDouble()) {
+          //   _queue[i]!.number = 0;
+          // }
+
+          break;
+        }
+        //
+        else if (_queue[i]!.oneArgOperation != null) {
+          _queue[i] = null;
+        }
+        //
+        else {
+          _queue[i] = null;
+          removeLast();
+        }
+
         _queue[i] = null;
         break;
       }
     }
+    _display();
   }
 
   void clearAll() {
     _clear();
-    //add();
+    _queue[0] = OperationElement(number: 0);
     _display();
   }
 
@@ -66,7 +92,7 @@ class OperationsQueue {
   }
 
   void _display() {
-    String output = "";
+    String output = "\n";
     for (var i in _queue) {
       if (i == null) break;
       output += i.toString();
@@ -75,12 +101,12 @@ class OperationsQueue {
   }
 }
 
-class CalculationElement {
+class OperationElement {
   Function(double)? oneArgOperation;
   Function(double, double)? twoArgOperation;
   double? number;
 
-  CalculationElement({this.number, this.oneArgOperation, this.twoArgOperation});
+  OperationElement({this.number, this.oneArgOperation, this.twoArgOperation});
 
   // ignore: non_constant_identifier_names
   static double SUM(double a, double b) {
@@ -115,7 +141,11 @@ class CalculationElement {
       case SQRT:
         output += "√";
     }
-    output += number.toString();
+
+    if (number != null) {
+      output +=
+          number! % 1 == 0 ? number!.toInt().toString() : number.toString();
+    }
 
     switch (twoArgOperation) {
       case SUM:

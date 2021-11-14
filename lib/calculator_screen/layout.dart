@@ -6,7 +6,7 @@ import 'package:eventify/eventify.dart';
 class CalculatorScreen extends StatefulWidget {
   CalculatorScreen({Key? key}) : super(key: key);
 
-  var _display = "0";
+  var _display = "\n0";
   final _eventEmitter = EventEmitter();
 
   void setDisplay(String newValue) {

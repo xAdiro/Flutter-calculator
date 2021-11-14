@@ -9,17 +9,7 @@ class PanelAnimation {
       parent: controller,
       curve: Curves.easeOutCubic,
     );
-    animation = Tween<double>(begin: 0, end: 1).animate(_curve)
-
-        //padding in grid
-        /*..addStatusListener((status) {
-            if (status == AnimationStatus.completed) {
-              controller.reverse();
-            } else if (status == AnimationStatus.dismissed) {
-              controller.forward();
-            }
-          })*/
-        ;
+    animation = Tween<double>(begin: 0, end: 1).animate(_curve);
     controller.forward();
   }
 

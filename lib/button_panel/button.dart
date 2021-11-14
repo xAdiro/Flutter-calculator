@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:calculator/button_panel/animations.dart';
-import 'package:calculator/calculator_screen/layout.dart';
-import 'package:calculator/logic/operations.dart';
 
 //Style
 const double _buttonFontSize = 20;
@@ -11,7 +8,7 @@ const Color _buttonBorderColor = Color(0xFFC9C9C9);
 
 class CalcButton extends StatelessWidget {
   late final Widget _child;
-  Function()? onPressed;
+  final Function()? onPressed;
 
   CalcButton({Key? key, String? label, IconData? iconData, this.onPressed})
       : super(key: key) {
