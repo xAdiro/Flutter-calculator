@@ -56,7 +56,7 @@ class ButtonPanel extends StatefulWidget {
         label: "+",
         onPressed: () => queue.add(twoArgOperation: OperationElement.SUM),
       ),
-      CalcButton(label: "±", onPressed: () {}),
+      CalcButton(label: "±", onPressed: queue.inverseSign),
       CalcButton(
         label: "0",
         onPressed: () => queue.add(digit: 0),

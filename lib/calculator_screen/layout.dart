@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/eventify.dart';
@@ -28,7 +30,9 @@ class CalculatorScreenState extends State<CalculatorScreen> {
     return Column(
       children: [
         Container(
-          child: Text(widget._display, style: const TextStyle(fontSize: 32)),
+          child: Text(widget._display,
+              style: const TextStyle(
+                  fontSize: 32, fontFeatures: [FontFeature.tabularFigures()])),
           alignment: Alignment.topRight,
         ),
       ],
