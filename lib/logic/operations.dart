@@ -1,6 +1,6 @@
 import 'dart:math';
-
 import 'package:calculator/calculator_screen/layout.dart';
+import 'dart:developer' as dev;
 
 class OperationsQueue {
   List<OperationElement?> _queue = List.filled(16, null);
@@ -161,15 +161,16 @@ class OperationsQueue {
     screen.setDisplay(output);
   }
 
+  ///Removes potential numberless operation from the end of queue
   void _removeEmptyOperation() {
-    for (int i = _queue.length - 2; i >= 0; i--) {
+    //DOESNT WORK!
+    for (int i = _queue.length - 1; i >= 0; i--) {
       if (_queue[i] != null) {
         if (_queue[i]!.number == null && _queue[i]!.oneArgOperation != null) {
           // cant have sqrt of null
 
           _queue[i] == null;
-        } else if (_queue[i]!.twoArgOperation != null &&
-            _queue[i + 1]!.number == null) {
+        } else {
           //cant have plus/minsu/div/mult null
 
           _queue[i]!.twoArgOperation == null;

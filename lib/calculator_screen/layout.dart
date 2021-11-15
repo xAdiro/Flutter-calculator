@@ -4,25 +4,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:eventify/eventify.dart';
 
+///Used to display actions from @ButtonPanel
 // ignore: must_be_immutable
 class CalculatorScreen extends StatefulWidget {
   CalculatorScreen({Key? key}) : super(key: key);
 
-  var _display = "\n0";
+  var _display = "\n0"; //current displayed value
   final _eventEmitter = EventEmitter();
 
   void setDisplay(String newValue) {
     _display = newValue;
-    _eventEmitter.emit("update", null, "");
+    _eventEmitter.emit("update", null, ""); //signal to update state
   }
 
   @override
-  CalculatorScreenState createState() => CalculatorScreenState();
+  _CalculatorScreenState createState() => _CalculatorScreenState();
 }
 
-class CalculatorScreenState extends State<CalculatorScreen> {
+class _CalculatorScreenState extends State<CalculatorScreen> {
   @override
   Widget build(BuildContext context) {
+    //Update state when needed
     widget._eventEmitter.on("update", null, (event, eventContext) {
       setState(() {});
     });
@@ -31,8 +33,10 @@ class CalculatorScreenState extends State<CalculatorScreen> {
       children: [
         Container(
           child: Text(widget._display,
-              style: const TextStyle(
-                  fontSize: 32, fontFeatures: [FontFeature.tabularFigures()])),
+              style: const TextStyle(fontSize: 32, fontFeatures: [
+                FontFeature
+                    .tabularFigures() //for monospace font (but doesnt work... yet!)
+              ])),
           alignment: Alignment.topRight,
         ),
       ],

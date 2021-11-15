@@ -7,22 +7,29 @@ const Color _buttonColor = Color(0xFFcf0000);
 const Color _buttonBorderColor = Color(0xFFC9C9C9);
 
 class CalcButton extends StatelessWidget {
+  ///icon or text depending on constructor input
   late final Widget _child;
   final Function()? onPressed;
 
+  ///Create button with icon or text and action [onPressed]. Prioritizes [label] over [iconData]
   CalcButton({Key? key, String? label, IconData? iconData, this.onPressed})
       : super(key: key) {
+    //if label given
     if (label != null) {
       _child = Text(label,
           style:
               const TextStyle(fontSize: _buttonFontSize, color: _buttonColor));
-    } else if (iconData != null) {
+    }
+    //if icon given
+    else if (iconData != null) {
       _child = Icon(
         iconData,
         size: _buttonFontSize,
         color: _buttonColor,
       );
-    } else {
+    }
+    //if none given
+    else {
       throw Exception("Either label or iconData has to be set");
     }
   }
