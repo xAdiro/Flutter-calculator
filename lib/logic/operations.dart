@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:calculator/calculator_screen/layout.dart';
-import 'dart:developer' as dev;
+import 'package:decimal/decimal.dart';
 
 class OperationsQueue {
   List<OperationElement?> _queue = List.filled(16, null);
@@ -8,40 +8,26 @@ class OperationsQueue {
   CalculatorScreen screen;
 
   OperationsQueue(this.screen) {
-    _queue[0] = OperationElement(number: 0);
+    _queue[0] = OperationElement(number: '0');
   }
 
-  void add(
-      {double? digit,
-      Function(double)? oneArgOperation,
-      Function(double, double)? twoArgOperation,
-      bool afterComa = false}) {
+  void add({
+    String? digit,
+    Function(Decimal)? oneArgOperation,
+    Function(Decimal, Decimal)? twoArgOperation,
+  }) {
     for (var i = 1; i < _queue.length; i++) {
       if (_queue[i] == null) {
         //
         if (digit != null) {
           //if there is already number add to it next digit
           if (_queue[i - 1]!.twoArgOperation == null) {
-            //if number is integer add digit
-            if (_queue[i - 1]!.number! % 1 == 0) {
-              _queue[i - 1]!.number = _queue[i - 1]!.number! * 10;
-              _queue[i - 1]!.number = _queue[i - 1]!.number! + digit;
+            //remove 0s before number
+            if (_queue[i - 1]!.number == '0') {
+              _queue[i - 1]!.number = "";
             }
-            //else add digit on the end of the fraction
-            else {
-              num j = 1;
-              var n = _queue[i - 1]!.number!;
 
-              while (n % 1 != 0) {
-                n *= 10;
-                j++;
-              }
-
-              j = pow(10, j);
-              dev.log(j.toString());
-
-              _queue[i - 1]!.number = _queue[i - 1]!.number! + digit / j;
-            }
+            _queue[i - 1]!.number = _queue[i - 1]!.number! + digit;
           }
           //else add new number equals to digit
           else {
@@ -66,15 +52,14 @@ class OperationsQueue {
       }
     }
 
-    if (_queue[_queue.length - 1] != null) {
-      // Cant have operation for number outside of space
-      _queue[_queue.length - 1]!.twoArgOperation = null;
-    }
     _display();
   }
 
   void inverseSign() {
-    _queue[0]!.number = -_queue[0]!.number!;
+    // put "-" before first number
+    _queue[0]!.number = Decimal.parse("-" + _queue[0]!.number!).toString();
+
+    // put "-" for the rest
 
     for (var i in _queue) {
       if (i == null) break;
@@ -99,56 +84,71 @@ class OperationsQueue {
       if (i == null) break;
 
       if (i.oneArgOperation != null) {
-        i.number ??= 0;
-        i.number = i.oneArgOperation!(i.number!);
+        i.number ??= '0';
+        i.number = i.oneArgOperation!(Decimal.parse(i.number!)).toString();
         i.oneArgOperation = null;
       }
     }
 
-    double result = _queue[0]!.number!;
+    //start with 0
+    Decimal result = Decimal.parse(_queue[0]!.number!);
 
     for (var i = 0; i < _queue.length - 1 && _queue[i] != null; i++) {
       //Mult, divide
-      if (_queue[i]!.twoArgOperation == OperationElement.MULTIPLY ||
-          _queue[i]!.twoArgOperation == OperationElement.DIVIDE) {
-        _queue[i + 1]!.number = _queue[i]!.twoArgOperation!(
-            _queue[i]!.number!, _queue[i + 1]!.number!);
-        _queue[i] =
-            OperationElement(number: 0, twoArgOperation: OperationElement.SUM);
+
+      var qi = _queue[i];
+      var qi1 = _queue[i + 1];
+
+      if (qi!.twoArgOperation == OperationElement.MULTIPLY ||
+          qi.twoArgOperation == OperationElement.DIVIDE) {
+        _queue[i + 1]!.number = qi.twoArgOperation!
+                (Decimal.parse(qi.number!), Decimal.parse(qi1!.number!))
+            .toString();
+        _queue[i] = OperationElement(
+            number: '0', twoArgOperation: OperationElement.SUM);
       }
     }
 
     for (var i = 0; i < _queue.length - 1; i++) {
-      if (_queue[i] == null) {
-        result = _queue[i - 1]!.number!;
+      var qi = _queue[i];
+      var qi1 = _queue[i + 1];
+      //if end of queue reached the result is calculated
+      if (qi == null) {
+        result = Decimal.parse(_queue[i - 1]!.number!);
         break;
       }
       //Sum, subtract
-      if (_queue[i]!.twoArgOperation == OperationElement.SUM ||
-          _queue[i]!.twoArgOperation == OperationElement.SUBTRACT) {
-        _queue[i + 1]!.number = _queue[i]!.twoArgOperation!(
-            _queue[i]!.number!, _queue[i + 1]!.number!);
+      if (qi.twoArgOperation == OperationElement.SUM ||
+          qi.twoArgOperation == OperationElement.SUBTRACT) {
+        _queue[i + 1]!.number = _queue[i]!
+            .twoArgOperation!
+                (Decimal.parse(qi.number!), Decimal.parse(qi1!.number!))
+            .toString();
       }
     }
 
     _clear();
-    _queue[0] = OperationElement(number: result);
+    _queue[0] = OperationElement(number: result.toString());
     _display();
   }
 
   void removeLast() {
     for (var i = _queue.length - 1; i >= 0; i--) {
+      // 54 + --> 54
       if (_queue[i] != null) {
         if (_queue[i]!.twoArgOperation != null) {
           _queue[i]!.twoArgOperation = null;
         }
-        //
+        //  54 --> 5
         else if (_queue[i]!.number != null) {
-          _queue[i]!.number = (_queue[i]!.number! ~/ 10).toDouble();
-          if (_queue[i]!.number == 0 && i != 0) _queue[i]!.number = null;
+          //remove last digit
+          _queue[i]!.number =
+              _queue[i]!.number!.substring(0, _queue[i]!.number!.length - 1);
+          //if there is no number make it null
+          if (_queue[i]!.number == "") _queue[i]!.number = null;
           break;
         }
-        //
+        // 54 + √ --> 54 +
         else if (_queue[i]!.oneArgOperation != null) {
           _queue[i] = null;
         }
@@ -166,7 +166,7 @@ class OperationsQueue {
 
   void clearAll() {
     _clear();
-    _queue[0] = OperationElement(number: 0);
+    _queue[0] = OperationElement(number: '0');
     _display();
   }
 
@@ -185,7 +185,6 @@ class OperationsQueue {
 
   ///Removes potential numberless operation from the end of queue
   void _removeEmptyOperation() {
-    //DOESNT WORK!
     for (int i = _queue.length - 1; i >= 0; i--) {
       if (_queue[i] != null) {
         if (_queue[i]!.number == null && _queue[i]!.oneArgOperation != null) {
@@ -205,34 +204,34 @@ class OperationsQueue {
 }
 
 class OperationElement {
-  Function(double)? oneArgOperation;
-  Function(double, double)? twoArgOperation;
-  double? number;
+  Function(Decimal)? oneArgOperation;
+  Function(Decimal, Decimal)? twoArgOperation;
+  String? number;
   OperationElement({this.number, this.oneArgOperation, this.twoArgOperation});
 
   // ignore: non_constant_identifier_names
-  static double SUM(double a, double b) {
+  static Decimal SUM(Decimal a, Decimal b) {
     return a + b;
   }
 
   // ignore: non_constant_identifier_names
-  static double SUBTRACT(double a, double b) {
+  static Decimal SUBTRACT(Decimal a, Decimal b) {
     return a - b;
   }
 
   // ignore: non_constant_identifier_names
-  static double MULTIPLY(double a, double b) {
+  static Decimal MULTIPLY(Decimal a, Decimal b) {
     return a * b;
   }
 
   // ignore: non_constant_identifier_names
-  static double DIVIDE(double a, double b) {
+  static Decimal DIVIDE(Decimal a, Decimal b) {
     return a / b;
   }
 
   // ignore: non_constant_identifier_names
-  static double SQRT(double a) {
-    return sqrt(a);
+  static Decimal SQRT(Decimal a) {
+    return Decimal.parse(sqrt(a.toDouble()).toString());
   }
 
   @override
@@ -245,10 +244,9 @@ class OperationElement {
     }
 
     if (number != null) {
-      output +=
-          number! % 1 == 0 ? number!.toInt().toString() : number.toString();
+      output += number!;
+      //number! % 1 == 0 ? number!.toInt().toString() : number.toString();
     }
-
     switch (twoArgOperation) {
       case SUM:
         output += "+";

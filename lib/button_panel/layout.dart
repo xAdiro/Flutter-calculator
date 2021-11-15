@@ -45,7 +45,7 @@ class ButtonPanel extends StatefulWidget {
       for (var i = 7; i <= 9; i++)
         CalcButton(
           label: i.toString(),
-          onPressed: () => queue.add(digit: i.toDouble()),
+          onPressed: () => queue.add(digit: i.toString()),
         ),
 
       // Multiplication *
@@ -58,7 +58,7 @@ class ButtonPanel extends StatefulWidget {
       for (var i = 4; i <= 6; i++)
         CalcButton(
           label: i.toString(),
-          onPressed: () => queue.add(digit: i.toDouble()),
+          onPressed: () => queue.add(digit: i.toString()),
         ),
 
       // Minus -
@@ -71,7 +71,7 @@ class ButtonPanel extends StatefulWidget {
       for (var i = 1; i <= 3; i++)
         CalcButton(
           label: i.toString(),
-          onPressed: () => queue.add(digit: i.toDouble()),
+          onPressed: () => queue.add(digit: i.toString()),
         ),
 
       // Sum +
@@ -84,7 +84,7 @@ class ButtonPanel extends StatefulWidget {
       CalcButton(label: "±", onPressed: queue.inverseSign),
       CalcButton(
         label: "0",
-        onPressed: () => queue.add(digit: 0),
+        onPressed: () => queue.add(digit: '0'),
       ),
 
       // Coma ,
