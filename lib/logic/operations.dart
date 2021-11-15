@@ -169,11 +169,11 @@ class OperationsQueue {
         if (_queue[i]!.number == null && _queue[i]!.oneArgOperation != null) {
           // cant have sqrt of null
 
-          _queue[i] == null;
+          _queue[i] = null;
         } else {
           //cant have plus/minsu/div/mult null
 
-          _queue[i]!.twoArgOperation == null;
+          _queue[i]!.twoArgOperation = null;
         }
 
         return;
