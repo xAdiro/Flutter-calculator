@@ -14,15 +14,37 @@ class OperationsQueue {
   void add(
       {double? digit,
       Function(double)? oneArgOperation,
-      Function(double, double)? twoArgOperation}) {
+      Function(double, double)? twoArgOperation,
+      bool afterComa = false}) {
     for (var i = 1; i < _queue.length; i++) {
       if (_queue[i] == null) {
         //
         if (digit != null) {
+          //if there is already number add to it next digit
           if (_queue[i - 1]!.twoArgOperation == null) {
-            _queue[i - 1]!.number = _queue[i - 1]!.number! * 10;
-            _queue[i - 1]!.number = _queue[i - 1]!.number! + digit;
-          } else {
+            //if number is integer add digit
+            if (_queue[i - 1]!.number! % 1 == 0) {
+              _queue[i - 1]!.number = _queue[i - 1]!.number! * 10;
+              _queue[i - 1]!.number = _queue[i - 1]!.number! + digit;
+            }
+            //else add digit on the end of the fraction
+            else {
+              num j = 1;
+              var n = _queue[i - 1]!.number!;
+
+              while (n % 1 != 0) {
+                n *= 10;
+                j++;
+              }
+
+              j = pow(10, j);
+              dev.log(j.toString());
+
+              _queue[i - 1]!.number = _queue[i - 1]!.number! + digit / j;
+            }
+          }
+          //else add new number equals to digit
+          else {
             _queue[i] = OperationElement(number: digit);
           }
         }
