@@ -29,7 +29,11 @@ class OperationsQueue {
               _queue[i - 1]!.number = "";
             }
 
-            _queue[i - 1]!.number = _queue[i - 1]!.number! + digit;
+            if (_queue[i - 1]!.number == null) {
+              _queue[i - 1]!.number = digit;
+            } else {
+              _queue[i - 1]!.number = _queue[i - 1]!.number! + digit;
+            }
           }
           //else add new number equals to digit
           else {
@@ -39,11 +43,16 @@ class OperationsQueue {
         //
         else if (oneArgOperation != null) {
           if (_queue[i - 1]!.twoArgOperation == null) {
-            _queue[i - 1]!.oneArgOperation = oneArgOperation;
-          } else {
-            _queue[i - 1]!.twoArgOperation == null;
-            _queue[i - 1]!.oneArgOperation = oneArgOperation;
+            if (i == 1 && _queue[0]!.number == '0') {
+              _queue[i - 1]!.number = null;
+              _queue[i - 1] =
+                  OperationElement(oneArgOperation: oneArgOperation);
+              break;
+            } else {
+              _queue[i - 1]!.twoArgOperation = OperationElement.MULTIPLY;
+            }
           }
+          _queue[i] = OperationElement(oneArgOperation: oneArgOperation);
         }
         //
         else if (twoArgOperation != null) {
