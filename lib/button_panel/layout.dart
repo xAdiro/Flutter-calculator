@@ -88,7 +88,10 @@ class ButtonPanel extends StatefulWidget {
       ),
 
       // Coma ,
-      CalcButton(label: ","),
+      CalcButton(
+        label: ",",
+        onPressed: queue.addComa,
+      ),
       CalcButton(
         label: "=",
         onPressed: queue.result,

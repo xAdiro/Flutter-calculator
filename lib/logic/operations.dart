@@ -3,6 +3,7 @@ import 'package:calculator/calculator_screen/layout.dart';
 import 'package:decimal/decimal.dart';
 
 class OperationsQueue {
+  ///Contains list of operations and numbers to which perform them on
   List<OperationElement?> _queue = List.filled(16, null);
   List<OperationElement?> _lastState = List.filled(16, null);
   CalculatorScreen screen;
@@ -11,6 +12,7 @@ class OperationsQueue {
     _queue[0] = OperationElement(number: '0');
   }
 
+  ///Adds [OperationElement] to [_queue]
   void add({
     String? digit,
     Function(Decimal)? oneArgOperation,
@@ -55,9 +57,31 @@ class OperationsQueue {
     _display();
   }
 
+  ///Adds coma to type in decimals
+  void addComa() {
+    for (var i = _queue.length - 1; i >= 0; i--) {
+      if (_queue[i] != null) {
+        _queue[i]!.number ??= "0";
+        _queue[i]!.number = _queue[i]!.number! + ".";
+
+        //If there is second coma delete it
+        try {
+          Decimal.parse(_queue[i]!.number!);
+        } catch (e) {
+          _queue[i]!.number =
+              _queue[i]!.number!.substring(0, _queue[i]!.number!.length - 1);
+        }
+        _display();
+
+        break;
+      }
+    }
+  }
+
+  ///Inverses sign of numbers in [_queue]
   void inverseSign() {
     // put "-" before first number
-    _queue[0]!.number = Decimal.parse("-" + _queue[0]!.number!).toString();
+    _queue[0]!.number = (-Decimal.parse(_queue[0]!.number!)).toString();
 
     // put "-" for the rest
 
@@ -74,6 +98,7 @@ class OperationsQueue {
     _display();
   }
 
+  ///Displays the result of [_queue] on [screen] then sets [_queue] to default (0)
   void result() {
     _lastState = _queue;
 
@@ -132,6 +157,7 @@ class OperationsQueue {
     _display();
   }
 
+  ///Removes last character
   void removeLast() {
     for (var i = _queue.length - 1; i >= 0; i--) {
       // 54 + --> 54
@@ -144,8 +170,11 @@ class OperationsQueue {
           //remove last digit
           _queue[i]!.number =
               _queue[i]!.number!.substring(0, _queue[i]!.number!.length - 1);
-          //if there is no number make it null
-          if (_queue[i]!.number == "") _queue[i]!.number = null;
+
+          //first field can't be empty
+          if (_queue[0]!.number == "") _queue[0]!.number = '0';
+          //if there is no number, and it's not first delete element
+          if (_queue[i]!.number == "") _queue[i] = null;
           break;
         }
         // 54 + √ --> 54 +
@@ -157,23 +186,26 @@ class OperationsQueue {
           _queue[i] = null;
           removeLast();
         }
-
+        _queue[0] ??= OperationElement(number: '0');
         break;
       }
     }
     _display();
   }
 
+  ///Sets [_queue] to default (0)
   void clearAll() {
     _clear();
     _queue[0] = OperationElement(number: '0');
     _display();
   }
 
+  ///Clears [_queue]
   void _clear() {
     _queue = List.filled(16, null);
   }
 
+  ///Display current [_queue] on [screen]
   void _display() {
     String output = "\n";
     for (var i in _queue) {
@@ -203,6 +235,7 @@ class OperationsQueue {
   }
 }
 
+///Made to create queue of operations to perform. Structure: [oneArgOperation], [number], [twoArgOperation] e.g. √4+
 class OperationElement {
   Function(Decimal)? oneArgOperation;
   Function(Decimal, Decimal)? twoArgOperation;
