@@ -50,12 +50,13 @@ class OperationsQueue {
               break;
             } else {
               _queue[i - 1]!.twoArgOperation = OperationElement.MULTIPLY;
+              _queue[i - 1]!.number ??= '0';
             }
           }
           _queue[i] = OperationElement(oneArgOperation: oneArgOperation);
         }
         //
-        else if (twoArgOperation != null) {
+        else if (twoArgOperation != null && _queue[i - 1]!.number != null) {
           _queue[i - 1]!.twoArgOperation = twoArgOperation;
           if (_queue[i - 1]!.number == null) _queue[i] = null;
         }
@@ -125,7 +126,13 @@ class OperationsQueue {
     }
 
     //start with 0
-    Decimal result = Decimal.parse(_queue[0]!.number!);
+    Decimal result;
+    try {
+      result = Decimal.parse(_queue[0]!.number!);
+    } catch (e) {
+      result = Decimal.zero;
+      _queue[0]!.number = '0';
+    }
 
     for (var i = 0; i < _queue.length - 1 && _queue[i] != null; i++) {
       //Mult, divide
@@ -229,9 +236,6 @@ class OperationsQueue {
     for (int i = _queue.length - 1; i >= 0; i--) {
       if (_queue[i] != null) {
         if (_queue[i]!.number == null && _queue[i]!.oneArgOperation != null) {
-          // cant have sqrt of null
-
-          _queue[i] = null;
         } else {
           //cant have plus/minsu/div/mult null
 
