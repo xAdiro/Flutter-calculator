@@ -40,13 +40,15 @@ class CalcButton extends StatelessWidget {
       child: TextButton(
         child: _child,
         onPressed: onPressed,
-      ),
-      decoration: BoxDecoration(
-          border: Border.all(
-            color: _buttonBorderColor,
-            width: 1,
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+              side: const BorderSide(color: _buttonBorderColor),
+            ),
           ),
-          borderRadius: const BorderRadius.all(Radius.circular(20))),
+        ),
+      ),
       margin: const EdgeInsets.all(3),
     );
   }

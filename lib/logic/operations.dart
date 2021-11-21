@@ -142,9 +142,17 @@ class OperationsQueue {
 
       if (qi!.twoArgOperation == OperationElement.MULTIPLY ||
           qi.twoArgOperation == OperationElement.DIVIDE) {
-        _queue[i + 1]!.number = qi.twoArgOperation!
-                (Decimal.parse(qi.number!), Decimal.parse(qi1!.number!))
-            .toString();
+        try {
+          _queue[i + 1]!.number = qi.twoArgOperation!
+                  (Decimal.parse(qi.number!), Decimal.parse(qi1!.number!))
+              .toString();
+        } catch (e) {
+          _clear();
+          _queue[0] = OperationElement(number: '0');
+          _display(text: "Błąd");
+          return;
+        }
+
         _queue[i] = OperationElement(
             number: '0', twoArgOperation: OperationElement.SUM);
       }
@@ -222,7 +230,11 @@ class OperationsQueue {
   }
 
   ///Display current [_queue] on [screen]
-  void _display() {
+  void _display({String? text}) {
+    if (text != null) {
+      screen.setDisplay(text);
+      return;
+    }
     String output = "\n";
     for (var i in _queue) {
       if (i == null) break;

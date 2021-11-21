@@ -2,10 +2,6 @@ import 'package:calculator/button_panel/layout.dart';
 import 'package:calculator/calculator_screen/layout.dart';
 import 'package:flutter/material.dart';
 
-/*
-
-USE DECIMAL IN FUTURE
-*/
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -15,16 +11,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     var screen = CalculatorScreen();
 
-    //Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
-
     return MaterialApp(
-      title: 'Welcome to Flutter',
+      title: 'Kalkulator',
       home: Scaffold(
-        body: Column(
-          children: [
-            screen,
-            ButtonPanel(screen: screen),
-          ],
+        body: SafeArea(
+          child: Column(
+            children: [
+              screen,
+              ButtonPanel(screen: screen),
+            ],
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+          ),
         ),
       ),
     );
