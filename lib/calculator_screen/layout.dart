@@ -33,10 +33,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       children: [
         Container(
           child: Text(widget._display,
-              style: const TextStyle(fontSize: 32, fontFeatures: [
-                FontFeature
-                    .tabularFigures() //for monospace font (but doesnt work... yet!)
-              ])),
+              style: const TextStyle(
+                fontSize: 40,
+              )),
           alignment: Alignment.topRight,
         ),
       ],

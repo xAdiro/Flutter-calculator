@@ -20,6 +20,7 @@ class ButtonPanel extends StatefulWidget {
       CalcButton(
         label: "AC",
         onPressed: queue.clearAll,
+        funcButton: true,
       ),
 
       // Backspace
@@ -27,6 +28,7 @@ class ButtonPanel extends StatefulWidget {
         iconData: const IconData(0xe0c5,
             fontFamily: 'MaterialIcons', matchTextDirection: true),
         onPressed: queue.removeLast,
+        funcButton: true,
       ),
 
       // Sqrt √
@@ -35,12 +37,14 @@ class ButtonPanel extends StatefulWidget {
         onPressed: () => queue.add(
           oneArgOperation: OperationElement.SQRT,
         ),
+        funcButton: true,
       ),
 
       // Division ÷
       CalcButton(
         label: "÷",
         onPressed: () => queue.add(twoArgOperation: OperationElement.DIVIDE),
+        funcButton: true,
       ),
 
       // 7-9
@@ -54,6 +58,7 @@ class ButtonPanel extends StatefulWidget {
       CalcButton(
         label: "×",
         onPressed: () => queue.add(twoArgOperation: OperationElement.MULTIPLY),
+        funcButton: true,
       ),
 
       // 4-6
@@ -63,10 +68,11 @@ class ButtonPanel extends StatefulWidget {
           onPressed: () => queue.add(digit: i.toString()),
         ),
 
-      // Minus -
+      // Minus −
       CalcButton(
-        label: "-",
+        label: "−",
         onPressed: () => queue.add(twoArgOperation: OperationElement.SUBTRACT),
+        funcButton: true,
       ),
 
       // 1-3
@@ -80,10 +86,15 @@ class ButtonPanel extends StatefulWidget {
       CalcButton(
         label: "+",
         onPressed: () => queue.add(twoArgOperation: OperationElement.SUM),
+        funcButton: true,
       ),
 
       // Inverse sign ±
-      CalcButton(label: "±", onPressed: queue.inverseSign),
+      CalcButton(
+        label: "±",
+        onPressed: queue.inverseSign,
+        funcButton: true,
+      ),
       CalcButton(
         label: "0",
         onPressed: () => queue.add(digit: '0'),
@@ -97,6 +108,7 @@ class ButtonPanel extends StatefulWidget {
       CalcButton(
         label: "=",
         onPressed: queue.result,
+        equalsButton: true,
       ),
     ];
   }

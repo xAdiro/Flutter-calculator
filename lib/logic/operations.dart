@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:calculator/calculator_screen/layout.dart';
 import 'package:decimal/decimal.dart';
+import 'dart:developer' as dev;
 
 class OperationsQueue {
   ///Contains list of operations and numbers to which perform them on
@@ -20,7 +21,7 @@ class OperationsQueue {
   }) {
     for (var i = 1; i < _queue.length; i++) {
       if (_queue[i] == null) {
-        //
+        //NUMBER
         if (digit != null) {
           //if there is already number add to it next digit
           if (_queue[i - 1]!.twoArgOperation == null) {
@@ -40,7 +41,7 @@ class OperationsQueue {
             _queue[i] = OperationElement(number: digit);
           }
         }
-        //
+        //ONEARGOPERATION
         else if (oneArgOperation != null) {
           if (_queue[i - 1]!.twoArgOperation == null) {
             if (i == 1 && _queue[0]!.number == '0') {
@@ -55,8 +56,13 @@ class OperationsQueue {
           }
           _queue[i] = OperationElement(oneArgOperation: oneArgOperation);
         }
-        //
+        //TWOARGOPERATION
         else if (twoArgOperation != null && _queue[i - 1]!.number != null) {
+          if (_queue[i - 1]!.number!.endsWith(".")) {
+            _queue[i - 1]!.number =
+                _queue[i - 1]!.number!.replaceAll(RegExp(r"\."), "");
+            dev.log("jhu");
+          }
           _queue[i - 1]!.twoArgOperation = twoArgOperation;
           if (_queue[i - 1]!.number == null) _queue[i] = null;
         }
@@ -310,7 +316,7 @@ class OperationElement {
         output += "+";
         break;
       case SUBTRACT:
-        output += "-";
+        output += "−";
         break;
       case MULTIPLY:
         output += "×";
