@@ -9,8 +9,10 @@ import 'package:calculator/button_panel/animations.dart';
 class ButtonPanel extends StatefulWidget {
   late final OperationsQueue queue;
   late final List<Widget> buttonList;
+  final double width;
 
-  ButtonPanel({Key? key, required CalculatorScreen screen}) : super(key: key) {
+  ButtonPanel({Key? key, required CalculatorScreen screen, required this.width})
+      : super(key: key) {
     queue = OperationsQueue(screen);
 
     buttonList = [
@@ -125,17 +127,16 @@ class ButtonPanelState extends State<ButtonPanel>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: Transform.scale(
-        scale: panelAnimation.animation.value,
-        child: GridView.count(
-          crossAxisCount: 4,
-          primary: false,
-          children: widget.buttonList,
-        ),
+    return Transform.scale(
+      scale: panelAnimation.animation.value,
+      child: GridView.count(
+        crossAxisCount: 4,
+        primary: false,
+        children: widget.buttonList,
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        padding: const EdgeInsets.all(0),
       ),
-      height: 500,
-      width: 500,
     );
   }
 }

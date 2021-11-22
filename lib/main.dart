@@ -14,17 +14,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kalkulator',
       home: Scaffold(
-        body: SafeArea(
-          child: Column(
+        body: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+          return Column(
             children: [
               screen,
-              ButtonPanel(screen: screen),
+              Divider(
+                thickness: 0.5,
+                color: Colors.black,
+                indent: constraints.maxWidth * 0.01,
+                endIndent: constraints.maxWidth * 0.01,
+              ),
+              ButtonPanel(
+                screen: screen,
+                width: constraints.maxWidth,
+              ),
             ],
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
