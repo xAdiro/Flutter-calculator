@@ -3,62 +3,93 @@ import 'package:flutter/material.dart';
 import 'package:eventify/eventify.dart';
 
 ///Used to display actions from @ButtonPanel
-class CalculatorScreen extends StatefulWidget {
+class CalculatorScreen extends StatelessWidget {
   CalculatorScreen({Key? key}) : super(key: key);
 
   //var _display = "0";
-  final _lines = [CalcField('0')]; //current displayed value
-  final _eventEmitter = EventEmitter();
+  final _history = [HistoryField('0')]; //current displayed value
+  final _historyKey = GlobalKey<AnimatedListState>();
+
+  void insert() {}
 
   void setDisplay(String newValue) {
-    _lines[0] = CalcField(newValue);
-    _eventEmitter.emit("update", null, ""); //signal to update state
+    _history[0].update(newValue);
   }
 
   void newLine(String newValue) {
-    _lines[0] = CalcField(_lines[0].text + "=");
-    _lines.insert(0, CalcField(newValue));
-    _lines.insert(0, CalcField(newValue));
-    _eventEmitter.emit("update", null, ""); //start writing new line
+    _history[0].add("=");
+    _history.insert(0, HistoryField(newValue));
+    _historyKey.currentState!.insertItem(
+      0,
+      duration: const Duration(milliseconds: 150),
+    );
+    _history.insert(0, HistoryField(newValue));
+    _historyKey.currentState!.insertItem(
+      0,
+      duration: const Duration(milliseconds: 150),
+    );
   }
 
   @override
-  _CalculatorScreenState createState() => _CalculatorScreenState();
-}
-
-class _CalculatorScreenState extends State<CalculatorScreen> {
-  @override
   Widget build(BuildContext context) {
-    //Update state when needed
-    widget._eventEmitter.on("update", null, (event, eventContext) {
-      setState(() {});
-    });
-
     return SizedBox(
-      child: ListView(
-        children: [for (var i in widget._lines.reversed) i],
+      child: AnimatedList(
+        key: _historyKey,
+        initialItemCount: 1,
+        itemBuilder: (context, index, animation) {
+          _history[index].animation = animation;
+
+          return _history[index];
+        },
+        reverse: true,
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
+        padding: const EdgeInsets.all(0),
       ),
       height: 200,
     );
   }
 }
 
-class CalcField extends StatelessWidget {
-  final String text;
+class HistoryField extends StatefulWidget {
+  HistoryField(this.text, {Key? key}) : super(key: key);
+  final _event = EventEmitter();
+  late Animation<double> animation;
+  late String text;
 
-  const CalcField(this.text, {Key? key}) : super(key: key);
+  void update(String text) {
+    this.text = text;
+    _event.emit("update", null, "");
+  }
+
+  void add(String text) {
+    this.text += text;
+    _event.emit("update", null, "");
+  }
+
+  @override
+  _CalcFieldState createState() => _CalcFieldState();
+}
+
+class _CalcFieldState extends State<HistoryField> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 40,
+    widget._event.on("update", null, (event, eventContext) {
+      setState(() {});
+    });
+
+    return SizeTransition(
+      axis: Axis.vertical,
+      sizeFactor: widget.animation,
+      child: Container(
+        child: Text(
+          widget.text,
+          style: const TextStyle(
+            fontSize: 40,
+          ),
         ),
+        alignment: Alignment.topRight,
       ),
-      alignment: Alignment.topRight,
     );
   }
 }

@@ -5,7 +5,6 @@ import 'package:decimal/decimal.dart';
 class OperationsQueue {
   ///Contains list of operations and numbers to which perform them on
   List<OperationElement?> _queue = List.filled(16, null);
-  List<OperationElement?> _lastState = List.filled(16, null);
   CalculatorScreen screen;
 
   OperationsQueue(this.screen) {
@@ -115,8 +114,6 @@ class OperationsQueue {
 
   ///Displays the result of [_queue] on [screen] then sets [_queue] to default (0)
   void result() {
-    _lastState = _queue;
-
     _removeEmptyOperation();
 
     for (var i in _queue) {
@@ -311,6 +308,7 @@ class OperationElement {
 
     if (number != null) {
       var n = num.parse(number!);
+
       //display only 8 decimal places if not integer
       output += n % 1 == 0 ? n.toString() : n.toStringAsFixed(8);
     }
