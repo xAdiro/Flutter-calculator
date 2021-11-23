@@ -18,7 +18,7 @@ class CalcButton extends StatelessWidget {
       {Key? key,
       String? label,
       IconData? iconData,
-      this.onPressed,
+      required this.onPressed,
       bool funcButton = false,
       this.equalsButton = false})
       : super(key: key) {

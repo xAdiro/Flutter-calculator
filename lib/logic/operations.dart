@@ -1,9 +1,9 @@
-import 'dart:math';
-import 'package:calculator/calculator_screen/layout.dart';
+import 'package:calculator/calculator_screen/calculator_screen.dart';
 import 'package:decimal/decimal.dart';
+import 'operation_element.dart';
 
 class OperationsQueue {
-  ///Contains list of operations and numbers to which perform them on
+  ///Contains queue of operations and numbers to which perform them on
   List<OperationElement?> _queue = List.filled(16, null);
   CalculatorScreen screen;
 
@@ -121,7 +121,11 @@ class OperationsQueue {
       if (i == null) break;
 
       if (i.oneArgOperation != null) {
-        i.number ??= '0';
+        if (i.number == null) {
+          _display(error: "Błąd");
+          return;
+        }
+
         i.number = i.oneArgOperation!(Decimal.parse(i.number!)).toString();
         i.oneArgOperation = null;
       }
@@ -150,9 +154,7 @@ class OperationsQueue {
                   Decimal.parse(queNext!.number!))
               .toString();
         } catch (e) {
-          _clear();
-          _queue[0] = OperationElement(number: '0');
-          _display(text: "Błąd");
+          _display(error: "Błąd");
           return;
         }
 
@@ -234,12 +236,19 @@ class OperationsQueue {
   }
 
   ///Display current [_queue] on [screen]
-  void _display({String? text}) {
+  void _display({String? text, String? error}) {
+    if (error != null) {
+      _clear();
+      _queue[0] = OperationElement(number: '0');
+      _display(text: "Błąd");
+      return;
+    }
+
     if (text != null) {
       screen.setDisplay(text);
       return;
     }
-    String output = "\n";
+    String output = "";
     for (var i in _queue) {
       if (i == null) break;
       output += i.toString();
@@ -262,68 +271,5 @@ class OperationsQueue {
         return;
       }
     }
-  }
-}
-
-///Made to create queue of operations to perform. Structure: [oneArgOperation], [number], [twoArgOperation] e.g. √4+
-class OperationElement {
-  Function(Decimal)? oneArgOperation;
-  Function(Decimal, Decimal)? twoArgOperation;
-  String? number;
-  OperationElement({this.number, this.oneArgOperation, this.twoArgOperation});
-
-  // ignore: non_constant_identifier_names
-  static Decimal SUM(Decimal a, Decimal b) {
-    return a + b;
-  }
-
-  // ignore: non_constant_identifier_names
-  static Decimal SUBTRACT(Decimal a, Decimal b) {
-    return a - b;
-  }
-
-  // ignore: non_constant_identifier_names
-  static Decimal MULTIPLY(Decimal a, Decimal b) {
-    return a * b;
-  }
-
-  // ignore: non_constant_identifier_names
-  static Decimal DIVIDE(Decimal a, Decimal b) {
-    return a / b;
-  }
-
-  // ignore: non_constant_identifier_names
-  static Decimal SQRT(Decimal a) {
-    return Decimal.parse(sqrt(a.toDouble()).toString());
-  }
-
-  @override
-  String toString() {
-    String output = "";
-
-    switch (oneArgOperation) {
-      case SQRT:
-        output += "√";
-    }
-
-    if (number != null) {
-      output += number!;
-    }
-    switch (twoArgOperation) {
-      case SUM:
-        output += "+";
-        break;
-      case SUBTRACT:
-        output += "−";
-        break;
-      case MULTIPLY:
-        output += "×";
-        break;
-      case DIVIDE:
-        output += "÷";
-        break;
-    }
-
-    return output;
   }
 }

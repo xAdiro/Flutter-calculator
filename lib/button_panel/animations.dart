@@ -1,8 +1,7 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
-//Simple zoom in animation for button panel
-
+///Simple zoom in animation for button panel
 class PanelAnimation {
   PanelAnimation(SingleTickerProviderStateMixin panel) {
     controller = AnimationController(

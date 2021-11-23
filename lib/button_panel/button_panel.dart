@@ -1,18 +1,17 @@
-import 'package:calculator/calculator_screen/layout.dart';
+import 'package:calculator/calculator_screen/calculator_screen.dart';
 import 'package:calculator/logic/operations.dart';
+import 'package:calculator/logic/operation_element.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:calculator/button_panel/button.dart';
-import 'package:calculator/button_panel/animations.dart';
+import 'button.dart';
+import 'animations.dart';
 
 ///Panel with calculator buttons. Displays actions on [screen]
 class ButtonPanel extends StatefulWidget {
   late final OperationsQueue queue;
   late final List<Widget> buttonList;
-  final double width;
 
-  ButtonPanel({Key? key, required CalculatorScreen screen, required this.width})
-      : super(key: key) {
+  ButtonPanel({Key? key, required CalculatorScreen screen}) : super(key: key) {
     queue = OperationsQueue(screen);
 
     buttonList = [

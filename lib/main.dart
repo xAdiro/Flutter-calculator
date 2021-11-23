@@ -1,5 +1,5 @@
-import 'package:calculator/button_panel/layout.dart';
-import 'package:calculator/calculator_screen/layout.dart';
+import 'package:calculator/button_panel/button_panel.dart';
+import 'package:calculator/calculator_screen/calculator_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
@@ -9,13 +9,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var screen = CalculatorScreen();
-
     return MaterialApp(
       title: 'Kalkulator',
       home: Scaffold(
         body: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
+          ///height of [Divider]
+          const divH = 16;
+
+          ///height of [ButtonPanel]
+          final panelH = constraints.maxWidth * (5 / 4);
+
+          ///height of [CalculatorScreen]
+          final screenHeight = constraints.maxHeight - panelH - divH;
+          final screen = CalculatorScreen(height: screenHeight);
+
           return Column(
             children: [
               screen,
@@ -27,11 +35,8 @@ class MyApp extends StatelessWidget {
               ),
               ButtonPanel(
                 screen: screen,
-                width: constraints.maxWidth,
               ),
             ],
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
           );
         }),
