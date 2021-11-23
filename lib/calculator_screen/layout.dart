@@ -14,11 +14,12 @@ class CalculatorScreen extends StatelessWidget {
   void insert() {}
 
   void setDisplay(String newValue) {
-    _history[0].update(newValue);
     _controller.jumpTo(_controller.position.minScrollExtent);
+    _history[0].update(newValue);
   }
 
   void newLine(String newValue) {
+    _controller.jumpTo(_controller.position.minScrollExtent);
     _history[0].add("=");
     _history.insert(0, HistoryField(newValue));
     _historyKey.currentState!.insertItem(
@@ -41,6 +42,8 @@ class CalculatorScreen extends StatelessWidget {
         itemBuilder: (context, index, animation) {
           _history[index].animation = animation;
 
+          if (index >= 3) _history[index].disposeState();
+
           return _history[index];
         },
         reverse: true,
@@ -49,11 +52,12 @@ class CalculatorScreen extends StatelessWidget {
         padding: const EdgeInsets.all(0),
         controller: _controller,
       ),
-      height: 200,
+      height: 250,
     );
   }
 }
 
+// ignore: must_be_immutable
 class HistoryField extends StatefulWidget {
   HistoryField(this.text, {Key? key}) : super(key: key);
   final _event = EventEmitter();
@@ -70,15 +74,30 @@ class HistoryField extends StatefulWidget {
     _event.emit("update", null, "");
   }
 
+  void disposeState() {
+    toDispose = true;
+    _event.emit("dispose", null, "");
+  }
+
+  bool toDispose = false;
+
   @override
   _CalcFieldState createState() => _CalcFieldState();
 }
 
-class _CalcFieldState extends State<HistoryField> {
+class _CalcFieldState extends State<HistoryField>
+    with AutomaticKeepAliveClientMixin<HistoryField> {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    //update state when needed
     widget._event.on("update", null, (event, eventContext) {
-      setState(() {});
+      if (mounted) setState(() {});
+    });
+
+    //dispose when needed
+    widget._event.on("dispose", null, (event, eventContext) {
+      updateKeepAlive();
     });
 
     return SizeTransition(
@@ -95,4 +114,7 @@ class _CalcFieldState extends State<HistoryField> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => !widget.toDispose;
 }
