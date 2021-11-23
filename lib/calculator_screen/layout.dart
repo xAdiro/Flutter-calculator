@@ -9,11 +9,13 @@ class CalculatorScreen extends StatelessWidget {
   //var _display = "0";
   final _history = [HistoryField('0')]; //current displayed value
   final _historyKey = GlobalKey<AnimatedListState>();
+  final _controller = ScrollController();
 
   void insert() {}
 
   void setDisplay(String newValue) {
     _history[0].update(newValue);
+    _controller.jumpTo(_controller.position.minScrollExtent);
   }
 
   void newLine(String newValue) {
@@ -45,6 +47,7 @@ class CalculatorScreen extends StatelessWidget {
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         padding: const EdgeInsets.all(0),
+        controller: _controller,
       ),
       height: 200,
     );

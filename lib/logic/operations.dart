@@ -307,10 +307,7 @@ class OperationElement {
     }
 
     if (number != null) {
-      var n = num.parse(number!);
-
-      //display only 8 decimal places if not integer
-      output += n % 1 == 0 ? n.toString() : n.toStringAsFixed(8);
+      output += number!;
     }
     switch (twoArgOperation) {
       case SUM:
