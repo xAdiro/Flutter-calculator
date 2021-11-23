@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:calculator/calculator_screen/layout.dart';
 import 'package:decimal/decimal.dart';
-import 'dart:developer' as dev;
 
 class OperationsQueue {
   ///Contains list of operations and numbers to which perform them on
@@ -23,16 +22,17 @@ class OperationsQueue {
       if (_queue[i] == null) {
         //NUMBER
         if (digit != null) {
-          //if there is already number add to it next digit
           if (_queue[i - 1]!.twoArgOperation == null) {
             //remove 0s before number
             if (_queue[i - 1]!.number == '0') {
               _queue[i - 1]!.number = "";
             }
-
+            //if number is empty place digit
             if (_queue[i - 1]!.number == null) {
               _queue[i - 1]!.number = digit;
-            } else {
+            }
+            //else add digit to existing one
+            else {
               _queue[i - 1]!.number = _queue[i - 1]!.number! + digit;
             }
           }
@@ -61,7 +61,6 @@ class OperationsQueue {
           if (_queue[i - 1]!.number!.endsWith(".")) {
             _queue[i - 1]!.number =
                 _queue[i - 1]!.number!.replaceAll(RegExp(r"\."), "");
-            dev.log("jhu");
           }
           _queue[i - 1]!.twoArgOperation = twoArgOperation;
           if (_queue[i - 1]!.number == null) _queue[i] = null;
@@ -143,14 +142,15 @@ class OperationsQueue {
     for (var i = 0; i < _queue.length - 1 && _queue[i] != null; i++) {
       //Mult, divide
 
-      var qi = _queue[i];
-      var qi1 = _queue[i + 1];
+      var queCurr = _queue[i];
+      var queNext = _queue[i + 1];
 
-      if (qi!.twoArgOperation == OperationElement.MULTIPLY ||
-          qi.twoArgOperation == OperationElement.DIVIDE) {
+      if (queCurr!.twoArgOperation == OperationElement.MULTIPLY ||
+          queCurr.twoArgOperation == OperationElement.DIVIDE) {
         try {
-          _queue[i + 1]!.number = qi.twoArgOperation!
-                  (Decimal.parse(qi.number!), Decimal.parse(qi1!.number!))
+          _queue[i + 1]!.number = queCurr.twoArgOperation!(
+                  Decimal.parse(queCurr.number!),
+                  Decimal.parse(queNext!.number!))
               .toString();
         } catch (e) {
           _clear();
@@ -165,25 +165,26 @@ class OperationsQueue {
     }
 
     for (var i = 0; i < _queue.length - 1; i++) {
-      var qi = _queue[i];
-      var qi1 = _queue[i + 1];
+      var queCurr = _queue[i];
+      var queNext = _queue[i + 1];
       //if end of queue reached the result is calculated
-      if (qi == null) {
+      if (queCurr == null) {
         result = Decimal.parse(_queue[i - 1]!.number!);
         break;
       }
       //Sum, subtract
-      if (qi.twoArgOperation == OperationElement.SUM ||
-          qi.twoArgOperation == OperationElement.SUBTRACT) {
+      if (queCurr.twoArgOperation == OperationElement.SUM ||
+          queCurr.twoArgOperation == OperationElement.SUBTRACT) {
         _queue[i + 1]!.number = _queue[i]!
-            .twoArgOperation!
-                (Decimal.parse(qi.number!), Decimal.parse(qi1!.number!))
+            .twoArgOperation!(
+                Decimal.parse(queCurr.number!), Decimal.parse(queNext!.number!))
             .toString();
       }
     }
 
     _clear();
     _queue[0] = OperationElement(number: result.toString());
+    screen.newLine(result.toString());
     _display();
   }
 
@@ -246,6 +247,7 @@ class OperationsQueue {
       if (i == null) break;
       output += i.toString();
     }
+
     screen.setDisplay(output);
   }
 
@@ -308,8 +310,9 @@ class OperationElement {
     }
 
     if (number != null) {
-      output += number!;
-      //number! % 1 == 0 ? number!.toInt().toString() : number.toString();
+      var n = num.parse(number!);
+      //display only 8 decimal places if not integer
+      output += n % 1 == 0 ? n.toString() : n.toStringAsFixed(8);
     }
     switch (twoArgOperation) {
       case SUM:
