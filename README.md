@@ -1,16 +1,7 @@
-# calculator
+# Calculator
+The app is a basic calculator with basic operations like +, -, *, /, √ and ±. In theory it has unlimited decimal precision but square root is limited by double.
 
-A new Flutter project.
 
-## Getting Started
+## About project
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This simple calculator is my first app written with Flutter. The code is messier than I would like to, but deadline and lack of time made it that way.
