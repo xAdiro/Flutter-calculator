@@ -1,6 +1,9 @@
 # Calculator
 The app is a basic calculator. My goal with this project was to learn basics of Flutter framework and Dart.
 
+## Technologies
+- Flutter framework
+
 ## Features
 - Basic mathematical operations: +, -, *, /, √ and ±
 - Scrollable history of previouis calculations
