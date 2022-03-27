@@ -2,6 +2,7 @@
 The app is a basic calculator. My goal with this project was to learn basics of Flutter framework and Dart.
 
 ## Technologies
+- Dart programming language
 - Flutter framework
 
 ## Features
